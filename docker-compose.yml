@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+  node:
+    build:
+      context: ./node
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./node:/app
+    depends_on:
+      - db
+    command: bash -c "until nc -z db 3306; do sleep 1; done && npm run start"

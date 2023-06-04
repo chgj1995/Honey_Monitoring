@@ -1,0 +1,43 @@
+    /* 탭 스타일 */
+    .tab {
+      display: flex;
+      background-color: #f1f1f1;
+    }
+
+    /* 탭 버튼 컨테이너 스타일 */
+    .tab-buttons {
+      flex: 1;
+      display: flex;
+      padding: 22px 16px;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* 탭 버튼 스타일 */
+    .tab-buttons a {
+      background-color: inherit;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      transition: 0.3s;
+    }
+
+    /* 활성화된 탭 버튼 스타일 */
+    .tab-buttons a.active {
+      background-color: #ccc;
+    }
+
+    /* 탭 버튼 호버 스타일 */
+    .tab-buttons a:hover {
+      background-color: #ddd;
+    }
+
+    /* 탭 컨텐츠 스타일 */
+    .tab-content {
+      padding: 20px;
+      background-color: #fff;
+      flex: 4;
+    }

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Database Chart</title>
+
+  <link rel="stylesheet" href="css/sidetab.css">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <div class="tab">
+    <div class="tab-buttons">
+      <a href="content.html" class="tab-link">Content</a>
+      <a href="chart.html" class="tab-link">Chart</a>
+    </div>
+
+    <div class="tab-content">
+      <h1>Temperature</h1>
+      <canvas id="temp-chart"></canvas>
+      <h1>Humidity</h1>
+      <canvas id="humid-chart"></canvas>
+      <h1>Count</h1>
+      <canvas id="count-chart"></canvas>
+    </div>
+  </div>
+
+  <script>
+
+    // 차트 생성
+    const ctx1 = document.getElementById('temp-chart').getContext('2d');
+    const ctx2 = document.getElementById('humid-chart').getContext('2d');
+    const ctx3 = document.getElementById('count-chart').getContext('2d');
+
+    const tempChart = new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Temperature',
+          data: [],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    const humidChart = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Humidity',
+          data: [],
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgba(255, 159, 64, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    const countChart = new Chart(ctx3, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Count',
+          data: [],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    $(document).ready(() => {
+      function refreshContent() {
+        $.get('/get/data', (data) => {
+          // 데이터 업데이트
+          tempChart.data.labels = data.map(item => `ID ${item.id}`);
+          tempChart.data.datasets[0].data = data.map(item => item.temp);
+          tempChart.update();
+          // 데이터 업데이트
+          humidChart.data.labels = data.map(item => `ID ${item.id}`);
+          humidChart.data.datasets[0].data = data.map(item => item.humid);
+          humidChart.update();
+          // 데이터 업데이트
+          countChart.data.labels = data.map(item => `ID ${item.id}`);
+          countChart.data.datasets[0].data = data.map(item => item.count);
+          countChart.update();
+        });
+      }
+      // 페이지 로드 시 초기 내용 로드
+      refreshContent();
+    });
+
+    // 현재 페이지 URL 가져오기
+    var currentURL = window.location.href;
+    // 각 탭 링크에 현재 페이지 URL이 포함되어 있다면 활성화 클래스 추가
+    var tabLinks = document.getElementsByClassName("tab-link");
+    for (var i = 0; i < tabLinks.length; i++) {
+      if (currentURL.includes(tabLinks[i].getAttribute("href"))) {
+        tabLinks[i].classList.add("active");
+      }
+    }
+  </script>
+</body>
+
+</html>

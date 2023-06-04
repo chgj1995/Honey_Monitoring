@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Database Content</title>
+  <link rel="stylesheet" href="css/sidetab.css">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+</head>
+
+<body>
+
+  <div class="tab">
+    <div class="tab-buttons">
+      <a href="content.html" class="tab-link">Content</a>
+      <a href="chart.html" class="tab-link">Chart</a>
+    </div>
+
+    <div class="tab-content">
+      <h1>Content</h1>
+      <!-- <button id="refreshBtn">Refresh</button> -->
+
+      <table id="data-table" class="display">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Device ID</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+
+    // 데이터 테이블 가져오기
+    const dataTable = $('#data-table').DataTable({
+      "paging": true,
+      "ordering": true,
+      "info": true,
+      "searching": true,
+      "columns": [
+        { searchable: false }, // 첫 번째 열 (전체 검색 기능 비활성화)
+        null, // 두 번째 열 (검색 기능 활성화)
+        { searchable: false }, // 세 번째 열 (전체 검색 기능 비활성화)
+        { searchable: false }, // 네 번째 열 (전체 검색 기능 비활성화)
+        { searchable: false }, // 다섯 번째 열 (전체 검색 기능 비활성화)
+      ],
+      "responsive": true,
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json"
+      }
+    });
+
+    $(document).ready(() => {
+      function refreshContent() {
+        $.get('/get/data', (data) => {
+          
+          // 테이블 초기화
+          dataTable.clear();
+
+          // 데이터 추가
+          data.forEach(item => {
+            dataTable.row.add([
+              item.id,
+              item.devid,
+              item.temp,
+              item.humid,
+              item.count
+            ]);
+          });
+
+          // 테이블 다시 그리기
+          dataTable.draw();
+        });
+      }
+      $('#refreshBtn').click(() => {
+        refreshContent();
+      });
+
+      // 페이지 로드 시 초기 내용 로드
+      refreshContent();
+    });
+
+    // 현재 페이지 URL 가져오기
+    var currentURL = window.location.href;
+
+    // 각 탭 링크에 현재 페이지 URL이 포함되어 있다면 활성화 클래스 추가
+    var tabLinks = document.getElementsByClassName("tab-link");
+    for (var i = 0; i < tabLinks.length; i++) {
+      if (currentURL.includes(tabLinks[i].getAttribute("href"))) {
+        tabLinks[i].classList.add("active");
+      }
+    }
+  </script>
+</body>
+
+</html>
